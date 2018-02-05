@@ -4,44 +4,66 @@ import { Link } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import LoginForm from './LoginForm';
 
 export default class Login extends Component {
-  constructor(props){
+  /**
+   * Class constructor.
+   */
+  constructor(props) {
     super(props);
-    this.state={
-      username:'',
-      password:''
-    }
+
+    // set the initial component state
+    this.state = {
+      errors: {},
+      user: {
+        email: '',
+        password: ''
+      }
+    };
+
+    this.processForm = this.processForm.bind(this);
+    this.changeUser = this.changeUser.bind(this);
   }
 
-  handleClick(event){
-    console.log("Username is " + this.state.username + " and password is " + this.state.password);
+  /**
+   * Process the form.
+   *
+   * @param {object} event - the JavaScript event object
+   */
+  processForm(event) {
+    // prevent default action. in this case, action is the form submission event
+    event.preventDefault();
+
+    console.log('email:', this.state.user.email);
+    console.log('password:', this.state.user.password);
+  }
+
+  /**
+   * Change the user object.
+   *
+   * @param {object} event - the JavaScript event object
+   */
+  changeUser(event) {
+    const field = event.target.name;
+    const user = this.state.user;
+    user[field] = event.target.value;
+
+    this.setState({
+      user
+    });
   }
 
   render() {
     return (
       <div id="login-form">
         <MuiThemeProvider>
-          <div>
-           <TextField
-             hintText="Enter your Username"
-             floatingLabelText="Username"
-             onChange = {(event,newValue) => this.setState({username:newValue})}
-             />
-           <br/>
-             <TextField
-               type="password"
-               hintText="Enter your Password"
-               floatingLabelText="Password"
-               onChange = {(event,newValue) => this.setState({password:newValue})}
-               />
-             <br/>
-            <div className="button-line">
-             <RaisedButton label="Submit" primary={true} onClick={(event) => this.handleClick(event)}/>
-            </div>
-
-            <Link to={'/register'}>Register For Little Fishers</Link>
-         </div>
+          <LoginForm
+            onSubmit={this.processForm}
+            onChange={this.changeUser}
+            errors={this.state.errors}
+            user={this.state.user}
+          />
          </MuiThemeProvider>
       </div>
     );
